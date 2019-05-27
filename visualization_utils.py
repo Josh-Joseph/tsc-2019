@@ -1,0 +1,71 @@
+import numpy as np
+import matplotlib
+import matplotlib.pylab as plt
+import seaborn as sns
+import torch
+import torch.nn.functional as F
+import glob
+import io
+import base64
+from IPython.display import clear_output
+
+
+device = torch.device("cpu")
+
+
+def visualize_weights(network):
+    f, axs = plt.subplots(len(list(network.children())), 1, figsize=(10, 5))
+
+    for i, subnet in enumerate(network.children()):
+        sns.heatmap(subnet.weight.detach().cpu().numpy(),
+                    cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
+        axs[i].set_title('Weights of Network Layer {}'.format(i))
+
+
+def visualize_activations(network, x):
+    f, axs = plt.subplots(len(list(network.children())), 1, figsize=(10, 5))
+    activations = x
+    for i, subnet in enumerate(network.children()):
+        try:
+            brain_state = subnet.weight.detach().clone().cpu().numpy() * activations.detach().clone().cpu().numpy()
+        except AttributeError:
+            brain_state = subnet.weight.detach().clone().cpu().numpy() * activations
+        activations = F.relu(subnet.cpu()(torch.tensor(activations)))
+
+        sns.heatmap(brain_state,
+                    cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
+        axs[i].set_title('Activations of Network Layer {}'.format(i))
+
+
+def visualize_state(x):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    plt.imshow(np.asarray(x), interpolation='nearest', aspect='auto')
+    plt.setp(ax.get_xticklabels(), visible=False)
+    plt.setp(ax.get_yticklabels(), visible=False)
+    ax.tick_params(axis='both', which='both', length=0)
+
+
+def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
+    for i in range(0, len(episode_history['state']), steps_size):
+        episode_index = i
+        visualize_state(episode_history['world_image'][episode_index])
+        visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['state'][episode_index])
+        clear_output()
+        print('\n'.join(episode_history['reported_mental_state'][episode_index]))
+        plt.pause(pause)
+
+
+# def show_video():
+#   mp4list = glob.glob('video/*.mp4')
+#   if len(mp4list) > 0:
+#     mp4 = mp4list[0]
+#     video = io.open(mp4, 'r+b').read()
+#     encoded = base64.b64encode(video)
+#
+#     ipythondisplay.display(HTML(data='''<video alt="test" autoplay
+#                 loop controls style="height: 400px;">
+#                 <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+#              </video>'''.format(encoded.decode('ascii'))))
+#   else:
+#     print("Could not find video")
+#
