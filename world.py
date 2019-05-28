@@ -39,7 +39,7 @@ def run_episode(agent, T_max=400, visualize_behavior=True, seed=None):
             break
 
         try:
-            episode_record['brain_state'].append(agent.brain_state(state))
+            episode_record['brain_state'].append(agent.image_brain_state(state))
         except AttributeError:
             pass
         try:

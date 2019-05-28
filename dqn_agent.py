@@ -18,7 +18,22 @@ UPDATE_EVERY = 4        # how often to update the network
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device = torch.device("cpu")
 
-class DQNAgent():
+class BehaviorNetwork(object):
+
+    def __init__(self, path_to_pretrained_network=None):
+        assert path_to_pretrained_network is not None
+        self.dqn_agent = DQNAgent()
+        self.dqn_agent.qnetwork_local.load_state_dict(torch.load(path_to_pretrained_network, map_location='cpu'))
+        self.dqn_agent.qnetwork_local.fc1.cpu()
+        self.dqn_agent.qnetwork_local.fc2.cpu()
+        self.dqn_agent.qnetwork_local.fc3.cpu()
+
+    def get_action(self, state):
+        return self.dqn_agent.act(state)
+
+
+
+class DQNAgent(object):
     """Interacts with and learns from the environment."""
 
     def __init__(self, state_size=8, action_size=4, seed=0):
