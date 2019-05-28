@@ -21,6 +21,7 @@ def visualize_weights(network, figsize=DEFAULT_FIG_SIZE):
         sns.heatmap(subnet.weight.detach().cpu().numpy(),
                     cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
         axs[i].set_title('Weights of Region {}'.format(i))
+    f.tight_layout()
 
 
 def visualize_activations(network, x, figsize=DEFAULT_FIG_SIZE):
@@ -36,14 +37,16 @@ def visualize_activations(network, x, figsize=DEFAULT_FIG_SIZE):
         sns.heatmap(brain_state,
                     cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
         axs[i].set_title('Activations of Region {}'.format(i))
+    f.tight_layout()
 
 
 def visualize_state(x, figsize=DEFAULT_FIG_SIZE):
-    fig, ax = plt.subplots(figsize=figsize)
+    f, ax = plt.subplots(figsize=figsize)
     plt.imshow(np.asarray(x), interpolation='nearest', aspect='auto')
     plt.setp(ax.get_xticklabels(), visible=False)
     plt.setp(ax.get_yticklabels(), visible=False)
     ax.tick_params(axis='both', which='both', length=0)
+    f.tight_layout()
 
 
 def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
