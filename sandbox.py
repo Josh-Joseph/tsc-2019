@@ -56,7 +56,7 @@ class Agent(DQNAgent):
 def animate_agent(agent, environment_name):
 
     episode_history = {
-        'state': [],
+        'world_observation': [],
         'action': [],
         'reward': [],
         'world_image': [],
@@ -88,7 +88,7 @@ def animate_agent(agent, environment_name):
         # display.display(f)
         # print()
         # print("Agent's Behavioral Description:")
-        # print('State: {}\nAction:{}'.format(episode_history['state'][i],
+        # print('State: {}\nAction:{}'.format(episode_history['world_observation'][i],
         #                                     episode_history['action'][i]), end='')
         # print()
         # print()
@@ -101,7 +101,7 @@ def animate_agent(agent, environment_name):
 
 
 
-        episode_history['state'].append(state)
+        episode_history['world_observation'].append(state)
         episode_history['action'].append(action)
         episode_history['reward'].append(reward)
         episode_history['world_image'].append(world_image)
@@ -118,7 +118,7 @@ def animate_agent(agent, environment_name):
     f, axs = plt.subplots(5, 1)
     f.set_size_inches(w=15, h=10)
 
-    for i in range(len(episode_history['state'])):
+    for i in range(len(episode_history['world_observation'])):
         # f, axs = plt.subplots(5, 1)
         for ax in axs:
             ax.clear()
@@ -134,7 +134,7 @@ def animate_agent(agent, environment_name):
         # display.display(f)
         print()
         print("Agent's Behavioral Description:")
-        print('State: {}\nAction:{}'.format(episode_history['state'][i],
+        print('State: {}\nAction:{}'.format(episode_history['world_observation'][i],
                                             episode_history['action'][i]), end='')
         print()
         print()

@@ -11,10 +11,11 @@ from IPython.display import clear_output
 
 
 device = torch.device("cpu")
+DEFAULT_FIG_SIZE = (7, 4)
 
 
-def visualize_weights(network):
-    f, axs = plt.subplots(len(list(network.children())), 1, figsize=(10, 5))
+def visualize_weights(network, figsize=DEFAULT_FIG_SIZE):
+    f, axs = plt.subplots(len(list(network.children())), 1, figsize=figsize)
 
     for i, subnet in enumerate(network.children()):
         sns.heatmap(subnet.weight.detach().cpu().numpy(),
@@ -22,8 +23,8 @@ def visualize_weights(network):
         axs[i].set_title('Weights of Region {}'.format(i))
 
 
-def visualize_activations(network, x):
-    f, axs = plt.subplots(len(list(network.children())), 1, figsize=(10, 5))
+def visualize_activations(network, x, figsize=DEFAULT_FIG_SIZE):
+    f, axs = plt.subplots(len(list(network.children())), 1, figsize=figsize)
     activations = x
     for i, subnet in enumerate(network.children()):
         try:
@@ -37,8 +38,8 @@ def visualize_activations(network, x):
         axs[i].set_title('Activations of Region {}'.format(i))
 
 
-def visualize_state(x):
-    fig, ax = plt.subplots(figsize=(10, 5))
+def visualize_state(x, figsize=DEFAULT_FIG_SIZE):
+    fig, ax = plt.subplots(figsize=figsize)
     plt.imshow(np.asarray(x), interpolation='nearest', aspect='auto')
     plt.setp(ax.get_xticklabels(), visible=False)
     plt.setp(ax.get_yticklabels(), visible=False)
@@ -46,11 +47,11 @@ def visualize_state(x):
 
 
 def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
-    for i in range(0, len(episode_history['state']), steps_size):
+    for i in range(0, len(episode_history['world_observation']), steps_size):
         episode_index = i
         visualize_state(episode_history['world_image'][episode_index])
         try:
-            visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['state'][episode_index])
+            visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['world_observation'][episode_index])
         except AttributeError:
             pass
         clear_output()

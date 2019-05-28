@@ -12,32 +12,12 @@ from PIL import Image
 from dqn_agent import DQNAgent
 from sandbox import Agent
 from collections import OrderedDict
+from model import MLP
+
 
 matplotlib.use("TkAgg")
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device = torch.device("cpu")
-
-
-class MLP(nn.Module):
-    def __init__(self, num_neurons, num_mental_states, fc_units=32):
-        super(MLP, self).__init__()
-        self.num_neurons = num_neurons
-        self.num_mental_states = num_mental_states
-        self.fc_units = fc_units
-        self.layers = nn.Sequential(
-            nn.Linear(self.num_neurons, self.fc_units),
-            nn.ReLU(),
-            nn.Linear(self.fc_units, self.fc_units),
-            nn.ReLU(),
-            nn.Linear(self.fc_units, self.num_mental_states)
-        )
-
-    def forward(self, x):
-        # convert tensor (128, 1, 28, 28) --> (128, 1*28*28)
-        # x = x.view(x.size(0), -1)
-        x = self.layers(x)
-        return x
-
 
 
 def collect_labeled_data(n_episodes=20):
@@ -49,7 +29,7 @@ def collect_labeled_data(n_episodes=20):
                   mental_state_mapping='')
 
     episode_history = {
-        'state': [],
+        'world_observation': [],
         'action': [],
         'reward': [],
         'world_image': [],
@@ -67,7 +47,7 @@ def collect_labeled_data(n_episodes=20):
             action = agent.act(state)
             state, reward, done, _ = env.step(action)
 
-            episode_history['state'].append(state)
+            episode_history['world_observation'].append(state)
             episode_history['action'].append(action)
             episode_history['reward'].append(reward)
             # episode_history['world_image'].append(world_image)
