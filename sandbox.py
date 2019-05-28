@@ -21,7 +21,7 @@ class Agent(DQNAgent):
         super(Agent, self).__init__(state_size, action_size, seed)
 
         self.actions_NN_path = actions_NN_path
-        self.qnetwork_local.load_state_dict(torch.load(self.actions_NN_path))
+        self.qnetwork_local.load_state_dict(torch.load(self.actions_NN_path, map_location='cpu'))
 
         self.mental_state_clf = mental_state_clf
         self.mental_state_mapping = mental_state_mapping

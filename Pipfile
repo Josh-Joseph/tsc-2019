@@ -11,7 +11,7 @@ torchvision = "*"
 pandas = "*"
 matplotlib = "*"
 jupyter = "*"
-gym = {version = "*",extras = ["box2d"]}
+gym = {extras = ["box2d"], version = "*"}
 pillow = "*"
 pyvirtualdisplay = "*"
 seaborn = "*"

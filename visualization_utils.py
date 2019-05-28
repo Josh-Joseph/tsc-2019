@@ -19,7 +19,7 @@ def visualize_weights(network):
     for i, subnet in enumerate(network.children()):
         sns.heatmap(subnet.weight.detach().cpu().numpy(),
                     cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
-        axs[i].set_title('Weights of Network Layer {}'.format(i))
+        axs[i].set_title('Weights of Region {}'.format(i))
 
 
 def visualize_activations(network, x):
@@ -30,11 +30,11 @@ def visualize_activations(network, x):
             brain_state = subnet.weight.detach().clone().cpu().numpy() * activations.detach().clone().cpu().numpy()
         except AttributeError:
             brain_state = subnet.weight.detach().clone().cpu().numpy() * activations
-        activations = F.relu(subnet.cpu()(torch.tensor(activations)))
+        activations = F.relu(subnet.cpu().float()(torch.tensor(activations).float()))
 
         sns.heatmap(brain_state,
                     cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
-        axs[i].set_title('Activations of Network Layer {}'.format(i))
+        axs[i].set_title('Activations of Region {}'.format(i))
 
 
 def visualize_state(x):
@@ -49,9 +49,13 @@ def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
     for i in range(0, len(episode_history['state']), steps_size):
         episode_index = i
         visualize_state(episode_history['world_image'][episode_index])
-        visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['state'][episode_index])
+        try:
+            visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['state'][episode_index])
+        except AttributeError:
+            pass
         clear_output()
-        print('\n'.join(episode_history['reported_mental_state'][episode_index]))
+        if episode_history['reported_mental_state'] is not None:
+            print('\n'.join(episode_history['reported_mental_state'][episode_index]))
         plt.pause(pause)
 
 
