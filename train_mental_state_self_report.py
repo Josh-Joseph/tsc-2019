@@ -64,7 +64,7 @@ def collect_labeled_data(n_episodes=20):
 
 
 mental_states = [
-    ["I believe I'm falling to fast", lambda state: state[3] < -0.2],
+    ["I believe I'm falling too fast", lambda state: state[3] < -0.2],
     ["I desire to land", lambda state: state[-2] != 1 and state[-1] != 1],
     ["I'm afraid to tip over", lambda state: np.abs(state[5]) > 0.2],
     ["I desire to go left", lambda state: state[0] > 0.2],

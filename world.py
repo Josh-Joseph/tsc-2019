@@ -4,7 +4,7 @@ import torch
 import numpy as np
 
 
-def run_episode(agent, T_max=400, visualize_behavior=True, seed=None):
+def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
 
     episode_record = {
         'world_observation': [],

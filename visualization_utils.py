@@ -11,11 +11,11 @@ from IPython.display import clear_output
 
 
 device = torch.device("cpu")
-DEFAULT_FIG_SIZE = (7, 4)
+DEFAULT_FIG_SIZE = (7, 2)
 
 
 def visualize_weights(network, figsize=DEFAULT_FIG_SIZE):
-    f, axs = plt.subplots(len(list(network.children())), 1, figsize=figsize)
+    f, axs = plt.subplots(1, len(list(network.children())), figsize=figsize)
 
     for i, subnet in enumerate(network.children()):
         sns.heatmap(subnet.weight.detach().cpu().numpy(),
@@ -25,7 +25,7 @@ def visualize_weights(network, figsize=DEFAULT_FIG_SIZE):
 
 
 def visualize_activations(network, x, figsize=DEFAULT_FIG_SIZE):
-    f, axs = plt.subplots(len(list(network.children())), 1, figsize=figsize)
+    f, axs = plt.subplots(1, len(list(network.children())), figsize=figsize)
     activations = x
     for i, subnet in enumerate(network.children()):
         try:
@@ -40,7 +40,7 @@ def visualize_activations(network, x, figsize=DEFAULT_FIG_SIZE):
     f.tight_layout()
 
 
-def visualize_state(x, figsize=DEFAULT_FIG_SIZE):
+def visualize_state(x, figsize=(7, 4)):
     f, ax = plt.subplots(figsize=figsize)
     plt.imshow(np.asarray(x), interpolation='nearest', aspect='auto')
     plt.setp(ax.get_xticklabels(), visible=False)
@@ -50,28 +50,28 @@ def visualize_state(x, figsize=DEFAULT_FIG_SIZE):
 
 
 def visualize_subjective_mental_state(agent, brain_state, figsize=DEFAULT_FIG_SIZE):
-    f, ax = plt.subplots(1, 1, figsize=(figsize[0], figsize[1] // 3))
+    f, ax = plt.subplots(1, 1, figsize=figsize)
     subjective_mental_state = agent.mind.subjective_mental_state(np.concatenate([array.flatten() for array in brain_state]))
     sns.heatmap([subjective_mental_state], cbar=False, xticklabels=False, yticklabels=False, ax=ax)
     ax.set_title('Subjective Mental State')
     f.tight_layout()
 
 
-def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
+def animate_episode_history(episode_history, agent, steps_size=25, pause=3, exclude_mental=False):
     for i in range(0, len(episode_history['world_observation']), steps_size):
         episode_index = i
-        visualize_state(episode_history['world_image'][episode_index])
+        if episode_history['brain_state'] is not None and not exclude_mental:
+            try:
+                brain_state = np.concatenate([array.flatten() for array in episode_history['brain_state'][episode_index]])
+                visualize_subjective_mental_state(agent, brain_state)
+                visualize_activations(agent.mind.mental_state_classifier, brain_state)
+            except AttributeError:
+                pass
         try:
             visualize_activations(agent.brain.behavior_network.qnetwork_local, episode_history['world_observation'][episode_index])
         except AttributeError:
             pass
-        if episode_history['brain_state'] is not None:
-            try:
-                brain_state = np.concatenate([array.flatten() for array in episode_history['brain_state'][episode_index]])
-                visualize_activations(agent.mind.mental_state_classifier, brain_state)
-                visualize_subjective_mental_state(agent, brain_state)
-            except AttributeError:
-                pass
+        visualize_state(episode_history['world_image'][episode_index])
         clear_output()
         if episode_history['reported_mental_state'] is not None:
             print('\n'.join(episode_history['reported_mental_state'][episode_index]))
