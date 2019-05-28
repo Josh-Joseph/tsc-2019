@@ -49,14 +49,29 @@ def visualize_state(x, figsize=DEFAULT_FIG_SIZE):
     f.tight_layout()
 
 
+def visualize_subjective_mental_state(agent, brain_state, figsize=DEFAULT_FIG_SIZE):
+    f, ax = plt.subplots(1, 1, figsize=(figsize[0], figsize[1] // 3))
+    subjective_mental_state = agent.mind.subjective_mental_state(np.concatenate([array.flatten() for array in brain_state]))
+    sns.heatmap([subjective_mental_state], cbar=False, xticklabels=False, yticklabels=False, ax=ax)
+    ax.set_title('Subjective Mental State')
+    f.tight_layout()
+
+
 def animate_episode_history(episode_history, agent, steps_size=25, pause=3):
     for i in range(0, len(episode_history['world_observation']), steps_size):
         episode_index = i
         visualize_state(episode_history['world_image'][episode_index])
         try:
-            visualize_activations(agent.dqn_agent.qnetwork_local, episode_history['world_observation'][episode_index])
+            visualize_activations(agent.brain.behavior_network.qnetwork_local, episode_history['world_observation'][episode_index])
         except AttributeError:
             pass
+        if episode_history['brain_state'] is not None:
+            try:
+                brain_state = np.concatenate([array.flatten() for array in episode_history['brain_state'][episode_index]])
+                visualize_activations(agent.mind.mental_state_classifier, brain_state)
+                visualize_subjective_mental_state(agent, brain_state)
+            except AttributeError:
+                pass
         clear_output()
         if episode_history['reported_mental_state'] is not None:
             print('\n'.join(episode_history['reported_mental_state'][episode_index]))

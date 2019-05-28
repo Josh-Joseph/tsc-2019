@@ -43,7 +43,7 @@ def run_episode(agent, T_max=400, visualize_behavior=True, seed=None):
         except AttributeError:
             pass
         try:
-            episode_record['mental_state'].append(agent.mental_state(state))
+            episode_record['mental_state'].append(agent.mind.subjective_mental_state(agent.image_brain_state(state)))
         except AttributeError:
             pass
         try:
