@@ -32,7 +32,6 @@ class BehaviorNetwork(object):
         return self.dqn_agent.act(state)
 
 
-
 class DQNAgent(object):
     """Interacts with and learns from the environment."""
 
@@ -131,6 +130,21 @@ class DQNAgent(object):
         """
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
+
+
+
+
+class MentalDQNAgent(DQNAgent):
+
+    def __init__(self, state_size=8, action_size=4, seed=0):
+        super().__init__(state_size=state_size, action_size=action_size, seed=seed)
+
+
+    def get_mental_state(self, state):
+        return [1.0, 0.1, 2, 3]
+
+
+
 
 
 class ReplayBuffer:
