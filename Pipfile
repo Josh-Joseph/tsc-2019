@@ -11,10 +11,12 @@ torchvision = "*"
 pandas = "*"
 matplotlib = "*"
 jupyter = "*"
-gym = {extras = ["box2d"], version = "*"}
+gym = {version = "*",extras = ["box2d"]}
 pillow = "*"
 pyvirtualdisplay = "*"
 seaborn = "*"
+jupyter-contrib-nbextensions = "*"
+owlready2 = "*"
 
 [requires]
 python_version = "3.5"

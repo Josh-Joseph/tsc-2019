@@ -7,7 +7,7 @@ import numpy as np
 def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
 
     episode_record = {
-        'world_observation': [],
+        'observation': [],
         'action': [],
         'reward': [],
         'world_image': [],
@@ -30,7 +30,7 @@ def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
             world_image = None
         state, reward, done, _ = env.step(action)
 
-        episode_record['world_observation'].append(state)
+        episode_record['observation'].append(state)
         episode_record['action'].append(action)
         episode_record['reward'].append(reward)
         episode_record['world_image'].append(world_image)
