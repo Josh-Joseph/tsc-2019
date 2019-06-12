@@ -16,12 +16,12 @@ def train_agent():
     # file_name = 'solved.pth'
     file_name = 'checkpoint.pth'
     # file_name = 'checkpoint2.pth'
-    try:
-        agent.qnetwork_local.load_state_dict(torch.load('../' + file_name, map_location='cpu'))
-        agent.qnetwork_target.load_state_dict(torch.load('../' + file_name, map_location='cpu'))
-    except FileNotFoundError:
-        agent.qnetwork_local.load_state_dict(torch.load(file_name, map_location='cpu'))
-        agent.qnetwork_target.load_state_dict(torch.load( file_name, map_location='cpu'))
+    # try:
+    #     agent.qnetwork_local.load_state_dict(torch.load('../' + file_name, map_location='cpu'))
+    #     agent.qnetwork_target.load_state_dict(torch.load('../' + file_name, map_location='cpu'))
+    # except FileNotFoundError:
+    #     agent.qnetwork_local.load_state_dict(torch.load(file_name, map_location='cpu'))
+    #     agent.qnetwork_target.load_state_dict(torch.load( file_name, map_location='cpu'))
 
     def dqn(n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
         """Deep Q-Learning.
@@ -59,7 +59,7 @@ def train_agent():
             if i_episode % 100 == 0:
                 print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
                 torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
-            if np.mean(scores_window) >= 300.0:
+            if np.mean(scores_window) >= 200.0:
                 print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100, np.mean(scores_window)))
                 torch.save(agent.qnetwork_local.state_dict(), 'solved.pth')
                 break
