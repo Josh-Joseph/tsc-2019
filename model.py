@@ -3,6 +3,27 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+class MentalQNetwork(nn.Module):
+    # https://github.com/udacity/deep-reinforcement-learning/blob/master/dqn/solution/model.py
+
+    def __init__(self, state_size, action_size, mental_size, seed, fc1_units=64, fc2_units=128):
+        super(MentalQNetwork, self).__init__()
+        self.seed = torch.manual_seed(seed)
+        self.fc1 = nn.Linear(state_size, fc1_units)
+        self.fc2 = nn.Linear(fc1_units + mental_size, fc2_units)
+        self.fc3 = nn.Linear(fc2_units, mental_size)
+        self.fc4 = nn.Linear(fc2_units, action_size)
+
+    def forward(self, x):
+        obs = x[:, :8]
+        prev_mental = x[:, -5:]
+        x1 = F.relu(self.fc1(obs))
+        x2 = F.relu(self.fc2(torch.cat([x1, prev_mental], dim=1)))
+        mental_activation = self.fc3(x2)
+        action_activation = self.fc4(x2)
+        return torch.cat([action_activation, mental_activation], dim=1)
+
+
 class QNetwork(nn.Module):
     # https://github.com/udacity/deep-reinforcement-learning/blob/master/dqn/solution/model.py
 

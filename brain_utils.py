@@ -18,21 +18,29 @@ third_person_brain_state_ontology = {
 }
 
 
-def get_brain_state(agent, observation):
+def get_brain_state(agent, state_and_mental):
+
+    observation = state_and_mental[:8]
+    prev_mental = state_and_mental[-5:]
 
     weights = []
     activations = []
 
     activations.append(observation)
-    activation = torch.tensor(observation)
-    for subnet in agent.brain.behavior_network.qnetwork_local.children():
+    networks = list(agent.qnetwork_local.children())
+    for subnet in networks:
         weights.append(subnet.weight.detach().cpu().numpy())
-        activation = subnet(activation)
-        activations.append(activation.detach().clone().cpu().numpy())
+
+    activations.append(F.relu(networks[0](torch.tensor(activations[0]))).detach().numpy())
+    activations.append(F.relu(networks[1](torch.cat([torch.tensor(activations[1]),
+                                                     torch.tensor(prev_mental)]))).detach().numpy())
+    activations.append(networks[2](torch.tensor(activations[2])).detach().numpy())
+    activations.append(networks[3](torch.tensor(activations[2])).detach().numpy())
+
 
     # FIX THIS !!!! APPENDING EXTRA TO TEST FOR NEW NETWORK
-    weights.append(subnet.weight.detach().cpu().numpy())
-    activations.append(activation.detach().clone().cpu().numpy())
+    # weights.append(subnet.weight.detach().cpu().numpy())
+    # activations.append(activation.detach().clone().cpu().numpy())
 
     brain_state = copy.deepcopy(third_person_brain_state_ontology)
     brain_state['observation'] = observation
