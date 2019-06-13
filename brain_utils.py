@@ -34,10 +34,12 @@ def get_brain_state(agent, state_and_mental):
     activations.append(F.relu(networks[0](torch.tensor(activations[0]))).detach().numpy())
     activations.append(F.relu(networks[1](torch.cat([torch.tensor(activations[1]),
                                                      torch.tensor(prev_mental)]))).detach().numpy())
-    activations.append(networks[2](torch.tensor(activations[0])).detach().numpy())
+    # activations.append(networks[2](torch.tensor(activations[0])).detach().numpy())
     # activations.append(networks[3](torch.tensor(activations[2])).detach().numpy()) FIX !!!!!!!!!
 
     # activations.append(networks[2](torch.tensor(activations[0])).detach().numpy())
+    activations.append(torch.sigmoid(networks[2](torch.cat([torch.tensor(activations[1]),
+                                                            torch.tensor(activations[2])]))).detach().numpy())
     # activations.append(networks[2](torch.cat([torch.tensor(activations[0]),
     #                                           torch.tensor(activations[1]),
     #                                           torch.tensor(activations[2])])).detach().numpy())

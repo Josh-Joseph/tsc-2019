@@ -59,8 +59,9 @@ def train_agent():
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
             if i_episode % 100 == 0:
                 print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+                print(eps)
                 torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
-            if np.mean(scores_window) >= 300.0:
+            if np.mean(scores_window) >= 200.0:
                 print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100, np.mean(scores_window)))
                 torch.save(agent.qnetwork_local.state_dict(), 'solved.pth')
                 break
@@ -70,6 +71,7 @@ def train_agent():
     env.seed(0)
 
     # scores = dqn(eps_start=0.1, eps_end=0.01)
+    # scores = dqn(eps_decay=0.99)
     scores = dqn()
 
     # plot the scores

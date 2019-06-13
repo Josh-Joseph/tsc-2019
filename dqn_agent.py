@@ -14,7 +14,7 @@ BATCH_SIZE = 64         # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
 LR = 5e-4               # learning rate
-# LR = 1e-3               # learning rate
+# LR = 5e-5               # learning rate
 UPDATE_EVERY = 4        # how often to update the network
 
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -71,10 +71,10 @@ def classify_states(observation):
         return observation[:, 1] <= 0.5
 
     def left(observation):
-        return observation[:, 0] <= 0.
+        return observation[:, 0] > 0.
 
     def right(observation):
-        return observation[:, 0] > 0.
+        return observation[:, 0] <= 0.
 
     def falling_too_fast(observation):
         return observation[:, 3] < -0.2
@@ -187,6 +187,7 @@ class DQNMentalAgent(object):
 
         # loss_mental = F.multilabel_margin_loss(mental_pred, target_mentals.long()) REMOVE !!!!
         loss_mental = F.multilabel_soft_margin_loss(mental_pred, target_mentals)
+        # loss_mental = F.multilabel_soft_margin_loss(F.sigmoid(mental_pred), target_mentals)
 
         loss = loss_rl + 1.0 * loss_mental
 
