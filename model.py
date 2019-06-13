@@ -11,15 +11,22 @@ class MentalQNetwork(nn.Module):
         self.seed = torch.manual_seed(seed)
         self.fc1 = nn.Linear(state_size, fc1_units)
         self.fc2 = nn.Linear(fc1_units + mental_size, fc2_units)
-        self.fc3 = nn.Linear(fc2_units, mental_size)
+        # self.fc3a = nn.Linear(state_size, fc1_units)
+        # self.fc3b = nn.Linear(fc1_units, mental_size)
+        self.fc3 = nn.Linear(state_size, mental_size)
+        # self.fc3 = nn.Linear(state_size + fc1_units + fc2_units, mental_size) FIX !!!!!!!!!
         self.fc4 = nn.Linear(fc2_units, action_size)
 
     def forward(self, x):
         obs = x[:, :8]
-        prev_mental = x[:, -5:]
+        # prev_mental = x[:, -5:] FIX !!!!!!!!!
+        prev_mental = torch.zeros_like(x[:, -5:])
         x1 = F.relu(self.fc1(obs))
         x2 = F.relu(self.fc2(torch.cat([x1, prev_mental], dim=1)))
-        mental_activation = self.fc3(x2)
+        # mental_activation = F.relu(self.fc3a(obs))
+        # mental_activation = self.fc3b(mental_activation)
+        mental_activation = self.fc3(obs)
+        # mental_activation = self.fc3(torch.cat([obs, x1, x2], dim=1))
         action_activation = self.fc4(x2)
         return torch.cat([action_activation, mental_activation], dim=1)
 
