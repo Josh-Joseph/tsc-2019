@@ -11,11 +11,8 @@ def train_agent():
     # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     agent = DQNMentalAgent(state_size=8, action_size=4, mental_size=5, seed=0)
-    # file_name = 'checkpoint0.pth
-    # file_name = 'checkpoint1.pth'
     # file_name = 'solved.pth'
     file_name = 'checkpoint.pth'
-    # file_name = 'checkpoint2.pth'
     if False:
         try:
             agent.qnetwork_local.load_state_dict(torch.load('../' + file_name, map_location='cpu'))
@@ -59,9 +56,8 @@ def train_agent():
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
             if i_episode % 100 == 0:
                 print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
-                print(eps)
                 torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
-            if np.mean(scores_window) >= 200.0:
+            if np.mean(scores_window) >= 225.0:
                 print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100, np.mean(scores_window)))
                 torch.save(agent.qnetwork_local.state_dict(), 'solved.pth')
                 break
@@ -70,8 +66,6 @@ def train_agent():
     env = gym.make('LunarLander-v2')
     env.seed(0)
 
-    # scores = dqn(eps_start=0.1, eps_end=0.01)
-    # scores = dqn(eps_decay=0.99)
     scores = dqn()
 
     # plot the scores
@@ -86,9 +80,6 @@ def train_agent():
 def load_pretrained_agent():
 
     agent = DQNMentalAgent()
-    # file_name = 'checkpoint0.pth
-    # file_name = 'checkpoint1.pth'
-    # file_name = 'checkpoint2.pth'
     file_name = 'checkpoint.pth'
     # file_name = 'solved.pth'
     try:

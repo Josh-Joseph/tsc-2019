@@ -182,14 +182,11 @@ class DQNMentalAgent(object):
 
         states = states_and_prev_mentals[:, :8]
         target_mentals = classify_states(states)
-        # loss_mental = F.multilabel_margin_loss(torch.sigmoid(mentals), target_mentals.long())
         mental_pred = self.qnetwork_local(states_and_prev_mentals)[:, -5:]
 
-        # loss_mental = F.multilabel_margin_loss(mental_pred, target_mentals.long()) REMOVE !!!!
         loss_mental = F.multilabel_soft_margin_loss(mental_pred, target_mentals)
-        # loss_mental = F.multilabel_soft_margin_loss(F.sigmoid(mental_pred), target_mentals)
 
-        loss = loss_rl + 1.0 * loss_mental
+        loss = loss_rl + loss_mental
 
         # Minimize the loss
         self.optimizer.zero_grad()
