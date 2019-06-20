@@ -2,6 +2,7 @@ import gym
 from gym.wrappers import Monitor
 import torch
 import numpy as np
+import matplotlib.pylab as plt
 
 
 def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
@@ -64,3 +65,13 @@ def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
     env.close()
 
     return episode_record
+
+
+def visualize(x, figsize=(7, 4)):
+    f, ax = plt.subplots(figsize=figsize, constrained_layout=True)
+    plt.imshow(np.asarray(x), interpolation='nearest', aspect='auto')
+    plt.setp(ax.get_xticklabels(), visible=False)
+    plt.setp(ax.get_yticklabels(), visible=False)
+    ax.tick_params(axis='both', which='both', length=0)
+    plt.title('3rd-person view of the world', weight='bold', size=16)
+    # f.tight_layout()
