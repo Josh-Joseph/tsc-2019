@@ -13,10 +13,9 @@ matplotlib = "*"
 jupyter = "*"
 gym = {version = "*",extras = ["box2d"]}
 pillow = "*"
-pyvirtualdisplay = "*"
 seaborn = "*"
 jupyter-contrib-nbextensions = "*"
-owlready2 = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.5"

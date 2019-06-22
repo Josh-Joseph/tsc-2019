@@ -16,8 +16,6 @@ def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
     }
 
     env = gym.make("LunarLander-v2")
-    # if visualize_behavior:
-    #     env = Monitor(env, './video/' + agent.name, force=True)
     if seed is not None:
         env.seed(seed)
     state = env.reset()
@@ -71,5 +69,3 @@ def visualize(x, figsize=(7, 4)):
     plt.setp(ax.get_xticklabels(), visible=False)
     plt.setp(ax.get_yticklabels(), visible=False)
     ax.tick_params(axis='both', which='both', length=0)
-    plt.title('3rd-person view of the world', weight='bold', size=16)
-    # f.tight_layout()
