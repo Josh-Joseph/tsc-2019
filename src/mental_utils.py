@@ -1,5 +1,3 @@
-
-
 def high(observation):
     return observation[1] > 0.2
 
@@ -36,11 +34,11 @@ def report_mental_state(mental_state):
 
 
 if __name__ == "__main__":
-    from training import train_agent, load_pretrained_agent
+    from src.training import load_pretrained_agent
 
     agent = load_pretrained_agent()
 
-    import world
+    from src import world
 
     episode_history = world.run_episode(agent, visualize_behavior=False)
 

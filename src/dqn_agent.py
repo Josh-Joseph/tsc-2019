@@ -34,35 +34,6 @@ class BehaviorNetwork(object):
         return self.dqn_agent.act(state)
 
 
-# def classify_states(observation):
-#     def high(observation):
-#         return observation[:, 1] > 0.2
-#
-#     def low(observation):
-#         return observation[:, 1] <= 0.2
-#
-#     def left(observation):
-#         return observation[:, 0] < -0.2
-#
-#     def right(observation):
-#         return observation[:, 0] > 0.2
-#
-#     def middle(observation):
-#         return observation[:, 0].abs() < 0.2
-#
-#     # important_areas = [high, low, left, right, middle]
-#
-#     target_mentals = torch.stack([
-#         high(observation),
-#         low(observation),
-#         left(observation),
-#         right(observation),
-#         middle(observation)
-#     ], dim=1).float()
-#
-#     return target_mentals
-
-
 def classify_states(observation):
     def high(observation):
         return observation[:, 1] > 0.5
@@ -78,8 +49,6 @@ def classify_states(observation):
 
     def falling_too_fast(observation):
         return observation[:, 3] < -0.2
-
-    # important_areas = [high, low, left, right, middle]
 
     target_mentals = torch.stack([
         high(observation),

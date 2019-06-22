@@ -1,12 +1,8 @@
 import numpy as np
-import matplotlib
 import matplotlib.pylab as plt
 import seaborn as sns
 import torch
 import torch.nn.functional as F
-import glob
-import io
-import base64
 from IPython.display import clear_output
 
 

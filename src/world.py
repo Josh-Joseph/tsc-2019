@@ -1,6 +1,4 @@
 import gym
-from gym.wrappers import Monitor
-import torch
 import numpy as np
 import matplotlib.pylab as plt
 

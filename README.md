@@ -1,5 +1,9 @@
 # tsc-2019
 
+
+borrowed heavily from https://github.com/udacity/deep-reinforcement-learning/tree/master/dqn
+
+
 ## old files
 
 train_dqn_with_mental_states.py

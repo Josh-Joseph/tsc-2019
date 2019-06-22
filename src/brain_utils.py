@@ -73,11 +73,11 @@ def visualize_activations(brain_state, figsize=DEFAULT_FIG_SIZE):
 
 
 if __name__ == "__main__":
-    from training import train_agent, load_pretrained_agent
+    from src.training import load_pretrained_agent
 
     agent = load_pretrained_agent()
 
-    import world
+    from src import world
 
     episode_history = world.run_episode(agent, visualize_behavior=False)
 
