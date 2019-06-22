@@ -184,11 +184,10 @@ class DQNMentalAgent(object):
         target_mentals = classify_states(states)
         mental_pred = self.qnetwork_local(states_and_prev_mentals)[:, -5:]
 
-        loss_mental = F.multilabel_soft_margin_loss(mental_pred, target_mentals)
+        loss_internal_states = F.multilabel_soft_margin_loss(mental_pred, target_mentals)
 
-        loss = loss_rl + loss_mental
+        loss = loss_rl + loss_internal_states
 
-        # Minimize the loss
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
