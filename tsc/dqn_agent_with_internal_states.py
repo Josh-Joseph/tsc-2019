@@ -3,12 +3,11 @@
 
 import numpy as np
 import random
-import copy
 from collections import namedtuple, deque
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
-from model import InternalQNetwork
+from .model import InternalQNetwork
 
 
 BUFFER_SIZE = int(1e5)  # replay buffer size

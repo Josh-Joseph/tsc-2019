@@ -30,5 +30,5 @@ pipenv run jupyter nbextension enable spellchecker/main
 
 ### Training the model
 
-To train the model run: `pipenv run training.py`
+To train the model run: `pipenv run python3 train.py`
 

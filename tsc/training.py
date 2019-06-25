@@ -5,7 +5,7 @@ import torch
 import numpy as np
 import gym
 from collections import deque
-from dqn_agent_with_internal_states import DQNInternalStateAgent
+from .dqn_agent_with_internal_states import DQNInternalStateAgent
 import matplotlib.pyplot as plt
 
 
@@ -75,7 +75,3 @@ def load_pretrained_agent():
     agent = DQNInternalStateAgent()
     agent.qnetwork_local.load_state_dict(torch.load('../models/trained_model.pth', map_location='cpu'))
     return agent
-
-
-if __name__ == "__main__":
-    train_agent()
