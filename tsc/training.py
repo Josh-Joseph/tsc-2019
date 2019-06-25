@@ -9,7 +9,7 @@ from .dqn_agent_with_internal_states import DQNInternalStateAgent
 import matplotlib.pyplot as plt
 
 
-def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
+def dqn(agent, env, n_episodes=3000, max_t=500, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
     """Deep Q-Learning.
 
     Params
@@ -21,7 +21,7 @@ def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, ep
         eps_decay (float): multiplicative factor (per episode) for decreasing epsilon
     """
     scores = []  # list containing scores from each episode
-    scores_window = deque(maxlen=100)  # last 100 scores
+    scores_window = deque(maxlen=500)  # last 100 scores
     eps = eps_start  # initialize epsilon
     for i_episode in range(1, n_episodes + 1):
         state = env.reset()
@@ -44,10 +44,12 @@ def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, ep
         print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
 
         if i_episode % 100 == 0:
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(
+                i_episode, np.mean(scores_window)))
 
         if np.mean(scores_window) >= 225.0:
-            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100, np.mean(scores_window)))
+            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(
+                i_episode, np.mean(scores_window)))
             torch.save(agent.qnetwork_local.state_dict(), './models/trained_model.pth')
             break
 

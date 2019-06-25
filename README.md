@@ -5,6 +5,7 @@ Also see our [slides](docs/TSC-2019_slides.pdf) from the conference for more inf
 
 The DQN agent, model, and training code was borrowed heavily from the repository [here](https://github.com/udacity/deep-reinforcement-learning/tree/master/dqn).
 
+This was tested only on Ubuntu 16.04 using Python 3.5.
 ## Setup
 
 1. Install pipenv: `pip3 install pipenv`
