@@ -5,7 +5,7 @@ import torch
 import numpy as np
 import gym
 from collections import deque
-from dqn_agent import DQNInternalStateAgent
+from dqn_agent_with_internal_states import DQNInternalStateAgent
 import matplotlib.pyplot as plt
 
 

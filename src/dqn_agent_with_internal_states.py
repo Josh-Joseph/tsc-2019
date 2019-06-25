@@ -3,6 +3,7 @@
 
 import numpy as np
 import random
+import copy
 from collections import namedtuple, deque
 import torch
 import torch.nn.functional as F
@@ -164,48 +165,30 @@ class DQNInternalStateAgent(object):
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau * local_param.data + (1.0 - tau) * target_param.data)
 
+    def get_brain_state(self, state_and_recurrent):
 
-class ReplayBuffer:
-    """Fixed-size buffer to store experience tuples."""
+        observation = state_and_recurrent[:8]
+        prev_recurrent = state_and_recurrent[-5:]
 
-    def __init__(self, action_size, buffer_size, batch_size, seed):
-        """Initialize a ReplayBuffer object.
+        weights, activations = list(), list()
 
-        Params
-        ======
-            action_size (int): dimension of each action
-            buffer_size (int): maximum size of buffer
-            batch_size (int): size of each training batch
-            seed (int): random seed
-        """
-        self.action_size = action_size
-        self.memory = deque(maxlen=buffer_size)
-        self.batch_size = batch_size
-        self.experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
-        self.seed = random.seed(seed)
+        activations.append(observation)
+        networks = list(self.qnetwork_local.children())
+        for subnet in networks:
+            weights.append(subnet.weight.detach().cpu().numpy())
 
-    def add(self, state, action, reward, next_state, done):
-        """Add a new experience to memory."""
-        e = self.experience(state, action, reward, next_state, done)
-        self.memory.append(e)
+        activations.append(F.relu(networks[0](torch.tensor(activations[0]))).detach().numpy())
+        activations.append(F.relu(networks[1](torch.cat([torch.tensor(activations[1]),
+                                                         torch.tensor(prev_recurrent)]))).detach().numpy())
+        activations.append(torch.sigmoid(networks[2](torch.cat([torch.tensor(activations[1]),
+                                                                torch.tensor(activations[2])]))).detach().numpy())
+        activations.append(networks[3](torch.tensor(activations[2])).detach().numpy())
 
-    def sample(self):
-        """Randomly sample a batch of experiences from memory."""
-        experiences = random.sample(self.memory, k=self.batch_size)
+        brain_state = dict()
+        brain_state['layer_weights'] = weights
+        brain_state['activations'] = activations
 
-        states = torch.from_numpy(np.vstack([e.state for e in experiences if e is not None])).float().to(device)
-        actions = torch.from_numpy(np.vstack([e.action for e in experiences if e is not None])).long().to(device)
-        rewards = torch.from_numpy(np.vstack([e.reward for e in experiences if e is not None])).float().to(device)
-        next_states = torch.from_numpy(np.vstack([e.next_state for e in experiences if e is not None])).float().to(
-            device)
-        dones = torch.from_numpy(np.vstack([e.done for e in experiences if e is not None]).astype(np.uint8)).float().to(
-            device)
-
-        return (states, actions, rewards, next_states, dones)
-
-    def __len__(self):
-        """Return the current size of internal memory."""
-        return len(self.memory)
+        return brain_state
 
 
 class ReplayBuffer:
