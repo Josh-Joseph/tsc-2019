@@ -25,7 +25,7 @@ pipenv run jupyter nbextension enable spellchecker/main
 ### Running the notebook
 
 1. Launch a jupyter notebook server: `pipenv run jupyter notebook`
-1. Open and run the notebook located in `notebooks/TSC-2019.ipynb`
+1. Open and run the notebook located at `notebooks/TSC-2019.ipynb`
 
 
 ### Training the model
