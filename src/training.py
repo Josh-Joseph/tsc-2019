@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import gym
 from collections import deque
-from dqn_agent import DQNMentalAgent
+from dqn_agent import DQNInternalStateAgent
 import matplotlib.pyplot as plt
 
 
@@ -22,15 +22,15 @@ def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, ep
     eps = eps_start  # initialize epsilon
     for i_episode in range(1, n_episodes + 1):
         state = env.reset()
-        mental_activation = np.array([[0., 0., 0., 0., 0.]], dtype=np.float32)
+        recurrent_activation = np.array([[0., 0., 0., 0., 0.]], dtype=np.float32)
         score = 0
         for t in range(max_t):
-            prev_mental_activation = mental_activation[0]
-            state_and_prev_mental = np.concatenate((state, prev_mental_activation))
-            action = agent.act(state_and_prev_mental, eps)
-            mental_activation = agent.mental_activation(state_and_prev_mental)
+            prev_recurrent_activation = recurrent_activation[0]
+            state_and_prev_recurrent = np.concatenate((state, prev_recurrent_activation))
+            action = agent.act(state_and_prev_recurrent, eps)
+            recurrent_activation = agent.recurrent_activation(state_and_prev_recurrent)
             next_state, reward, done, _ = env.step(action)
-            agent.step(state_and_prev_mental, action, mental_activation, reward, next_state, done)
+            agent.step(state_and_prev_recurrent, action, recurrent_activation, reward, next_state, done)
             state = next_state
             score += reward
             if done:
@@ -50,7 +50,7 @@ def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, ep
 
 
 def train_agent():
-    agent = DQNMentalAgent(state_size=8, action_size=4, mental_size=5, seed=0)
+    agent = DQNInternalStateAgent(state_size=8, action_size=4, recurrent_size=5, seed=0)
 
     env = gym.make('LunarLander-v2')
     env.seed(0)
@@ -67,7 +67,7 @@ def train_agent():
 
 
 def load_pretrained_agent():
-    agent = DQNMentalAgent()
+    agent = DQNInternalStateAgent()
     agent.qnetwork_local.load_state_dict(torch.load('../models/trained_model.pth', map_location='cpu'))
     return agent
 

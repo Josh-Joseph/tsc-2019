@@ -1,37 +1,21 @@
 import numpy as np
 import random
 from collections import namedtuple, deque
-
-from model import QNetwork, MentalQNetwork
-
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
+from model import QNetwork, MentalQNetwork
+
 
 BUFFER_SIZE = int(1e5)  # replay buffer size
-# BATCH_SIZE = 128         # minibatch size
 BATCH_SIZE = 64         # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
 LR = 5e-4               # learning rate
-# LR = 5e-5               # learning rate
 UPDATE_EVERY = 4        # how often to update the network
 
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 device = torch.device("cpu")
-
-class BehaviorNetwork(object):
-
-    def __init__(self, path_to_pretrained_network=None):
-        assert path_to_pretrained_network is not None
-        self.dqn_agent = DQNAgent()
-        self.dqn_agent.qnetwork_local.load_state_dict(torch.load(path_to_pretrained_network, map_location='cpu'))
-        self.dqn_agent.qnetwork_local.fc1.cpu()
-        self.dqn_agent.qnetwork_local.fc2.cpu()
-        self.dqn_agent.qnetwork_local.fc3.cpu()
-
-    def get_action(self, state):
-        return self.dqn_agent.act(state)
 
 
 def classify_states(observation):
@@ -61,10 +45,10 @@ def classify_states(observation):
     return target_mentals
 
 
-class DQNMentalAgent(object):
+class DQNInternalStateAgent(object):
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size=8, action_size=4, mental_size=5, seed=0):
+    def __init__(self, state_size=8, action_size=4, recurrent_size=5, seed=0):
         """Initialize an Agent object.
 
         Params
@@ -78,8 +62,8 @@ class DQNMentalAgent(object):
         self.seed = random.seed(seed)
 
         # Q-Network
-        self.qnetwork_local = MentalQNetwork(state_size, action_size, mental_size, seed).to(device)
-        self.qnetwork_target = MentalQNetwork(state_size, action_size, mental_size, seed).to(device)
+        self.qnetwork_local = MentalQNetwork(state_size, action_size, recurrent_size, seed).to(device)
+        self.qnetwork_target = MentalQNetwork(state_size, action_size, recurrent_size, seed).to(device)
         self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=LR)
 
         # Replay memory
