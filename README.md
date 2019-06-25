@@ -1,50 +1,34 @@
 # tsc-2019
 
+This repository is for an agent we presented at [The Science of Consciousness](https://www.tsc2019-interlaken.ch) conference. 
+The slides from the presentation are [here](docs/TSC-2019_slides.pdf).
 
-borrowed heavily from https://github.com/udacity/deep-reinforcement-learning/tree/master/dqn
+The DQN agent, model, and training code was borrowed heavily from https://github.com/udacity/deep-reinforcement-learning/tree/master/dqn
 
+## Setup
 
-## old files
-
-train_dqn_with_mental_states.py
-
-train_mental_state_self_report.py
-
-dqn_agent.py
-
-world.py
-
-model.py
-
-## new files
-
-train.py - main script that trains the agent's NN and saves it 
-
-
-
-
-
-## usage
-
-pipenv install
-
+1. Install pipenv: `pip3 install pipenv`
+1. Set up the environment with the required packages: `pipenv install
+1. Install and enable the jupyter notebook extensions (optional):
+```
 pipenv run jupyter contrib nbextension install --user
-
-pipenv run jupyter nbextension enable spellchecker/main
 pipenv run jupyter nbextension enable codefolding/main
 pipenv run jupyter nbextension enable toc2/main
 pipenv run jupyter nbextension enable collapsible_headings/main
 pipenv run jupyter nbextension enable varInspector/main
-
-pipenv run jupyter notebook
-
-
-
-Plan:
+pipenv run jupyter nbextension enable spellchecker/main
+``` 
 
 
+## Usage
 
-* settle on lunar lander training/hyperparams/saved model
-* enumerate the mental states 
-* run 20 simulations to gather data of [brain state, mental state]
-* train mlp
+## Running the notebook
+
+1. Launch a jupyter notebook server: `pipenv run jupyter notebook`
+1. Open and run the notebook located in `notebooks/TSC-2019.ipynb`
+
+
+## Training the model
+
+To train the model run: `pipenv run training.py`
+
