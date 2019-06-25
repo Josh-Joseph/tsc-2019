@@ -1,3 +1,6 @@
+# Adapted from https://github.com/udacity/deep-reinforcement-learning/blob/master/dqn/solution/Deep_Q_Network_Solution.ipynb
+
+
 import torch
 import numpy as np
 import gym
@@ -39,13 +42,15 @@ def dqn(agent, env, n_episodes=3000, max_t=1000, eps_start=1.0, eps_end=0.01, ep
         scores.append(score)  # save most recent score
         eps = max(eps_end, eps_decay * eps)  # decrease epsilon
         print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
+
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+
         if np.mean(scores_window) >= 225.0:
-            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100,
-                                                                                         np.mean(scores_window)))
+            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode - 100, np.mean(scores_window)))
             torch.save(agent.qnetwork_local.state_dict(), '../models/trained_model.pth')
             break
+
     return scores
 
 

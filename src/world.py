@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 
 
-def run_episode(agent, T_max=400, visualize_behavior=True, seed=2):
+def run_episode(agent, T_max=500, visualize_behavior=True, seed=1234):
 
     episode_record = {
         'observation': [],
