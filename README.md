@@ -22,13 +22,13 @@ pipenv run jupyter nbextension enable spellchecker/main
 
 ## Usage
 
-## Running the notebook
+### Running the notebook
 
 1. Launch a jupyter notebook server: `pipenv run jupyter notebook`
 1. Open and run the notebook located in `notebooks/TSC-2019.ipynb`
 
 
-## Training the model
+### Training the model
 
 To train the model run: `pipenv run training.py`
 
