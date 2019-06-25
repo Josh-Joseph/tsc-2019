@@ -1,6 +1,6 @@
 # tsc-2019
 
-This repository is for an agent we presented at [The Science of Consciousness](https://www.tsc2019-interlaken.ch) conference. 
+This repository is for an agent we presented at [The 2019 Science of Consciousness conference](https://www.tsc2019-interlaken.ch). 
 The slides from the presentation are [here](docs/TSC-2019_slides.pdf).
 
 The DQN agent, model, and training code was borrowed heavily from https://github.com/udacity/deep-reinforcement-learning/tree/master/dqn
