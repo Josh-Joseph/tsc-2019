@@ -22,29 +22,31 @@ UPDATE_EVERY = 4        # how often to update the network
 device = torch.device("cpu")
 
 
-def classify_states(observation):
-    def high(observation):
+def map_observation_to_recurrent_state(observation):
+    def I_am_high_above_the_ground(observation):
         return observation[:, 1] > 0.5
 
-    def low(observation):
+    def I_am_low_to_the_ground(observation):
         return observation[:, 1] <= 0.5
 
-    def left(observation):
+    def I_am_to_the_left_of_the_center(observation):
         return observation[:, 0] > 0.
 
-    def right(observation):
+    def I_am_to_the_right_of_the_center(observation):
         return observation[:, 0] <= 0.
 
-    def falling_too_fast(observation):
+    def I_am_falling_too_fast(observation):
         return observation[:, 3] < -0.2
 
-    target_recurrents = torch.stack([
-        high(observation),
-        low(observation),
-        left(observation),
-        right(observation),
-        falling_too_fast(observation)
-    ], dim=1).float()
+    regions = [
+        I_am_high_above_the_ground(observation),
+        I_am_low_to_the_ground(observation),
+        I_am_to_the_left_of_the_center(observation),
+        I_am_to_the_right_of_the_center(observation),
+        I_am_falling_too_fast(observation)
+    ]
+
+    target_recurrents = torch.stack(regions, dim=1).float()
 
     return target_recurrents
 
@@ -138,7 +140,7 @@ class DQNInternalStateAgent(object):
         loss_rl = F.mse_loss(Q_expected, Q_targets)
 
         states = states_and_prev_recurrents[:, :8]
-        target_recurrents = classify_states(states)
+        target_recurrents = map_observation_to_recurrent_state(states)
         recurrent_pred = self.qnetwork_local(states_and_prev_recurrents)[:, -5:]
 
         loss_internal_states = F.multilabel_soft_margin_loss(recurrent_pred, target_recurrents)
