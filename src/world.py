@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 
 
-def run_episode(agent, T_max=500, visualize_behavior=True, seed=1234):
+def run_episode(agent, T_max=500, visualize_behavior=True, seed=0):
 
     episode_record = {
         'observation': [],
@@ -11,21 +11,20 @@ def run_episode(agent, T_max=500, visualize_behavior=True, seed=1234):
         'reward': [],
         'world_image': [],
         'brain_state': [],
-        'mental_state': [],
-        'reported_mental_state': []
+        'recurrent_state': []
     }
 
     env = gym.make("LunarLander-v2")
     if seed is not None:
         env.seed(seed)
     state = env.reset()
-    mental_activation = np.array([[0., 0., 0., 0., 0.]], dtype=np.float32)
+    recurrent_activation = np.array([[0., 0., 0., 0., 0.]], dtype=np.float32)
     for t in range(T_max):
-        if hasattr(agent, 'mental_activation'):
-            prev_mental_activation = mental_activation[0]
-            state_and_prev_mental = np.concatenate((state, prev_mental_activation))
-            action = agent.act(state_and_prev_mental)
-            mental_activation = agent.mental_activation(state_and_prev_mental)
+        if hasattr(agent, 'recurrent_activation'):
+            prev_recurrent_activation = recurrent_activation[0]
+            state_and_prev_recurrent = np.concatenate((state, prev_recurrent_activation))
+            action = agent.act(state_and_prev_recurrent)
+            recurrent_activation = agent.recurrent_activation(state_and_prev_recurrent)
         else:
             action = agent.act(state)
         if visualize_behavior:
@@ -34,8 +33,8 @@ def run_episode(agent, T_max=500, visualize_behavior=True, seed=1234):
             world_image = None
         state, reward, done, _ = env.step(action)
 
-        if hasattr(agent, 'mental_activation'):
-            episode_record['observation'].append(np.concatenate([state, mental_activation[0]]))
+        if hasattr(agent, 'recurrent_activation'):
+            episode_record['observation'].append(np.concatenate([state, recurrent_activation[0]]))
         else:
             episode_record['observation'].append(state)
         episode_record['action'].append(action)
@@ -44,19 +43,6 @@ def run_episode(agent, T_max=500, visualize_behavior=True, seed=1234):
 
         if done:
             break
-
-        # try:
-        #     episode_record['brain_state'].append(agent.image_brain_state(state))
-        # except AttributeError:
-        #     pass
-        # try:
-        #     episode_record['mental_state'].append(agent.mind.subjective_mental_state(agent.image_brain_state(state)))
-        # except AttributeError:
-        #     pass
-        # try:
-        #     episode_record['reported_mental_state'].append(agent.report_mental_state(state))
-        # except AttributeError:
-        #     pass
 
     env.close()
 

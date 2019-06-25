@@ -18,10 +18,10 @@ third_person_brain_state_ontology = {
 }
 
 
-def get_brain_state(agent, state_and_mental):
+def get_brain_state(agent, state_and_recurrent):
 
-    observation = state_and_mental[:8]
-    prev_mental = state_and_mental[-5:]
+    observation = state_and_recurrent[:8]
+    prev_recurrent = state_and_recurrent[-5:]
 
     weights = []
     activations = []
@@ -33,7 +33,7 @@ def get_brain_state(agent, state_and_mental):
 
     activations.append(F.relu(networks[0](torch.tensor(activations[0]))).detach().numpy())
     activations.append(F.relu(networks[1](torch.cat([torch.tensor(activations[1]),
-                                                     torch.tensor(prev_mental)]))).detach().numpy())
+                                                     torch.tensor(prev_recurrent)]))).detach().numpy())
     activations.append(torch.sigmoid(networks[2](torch.cat([torch.tensor(activations[1]),
                                                             torch.tensor(activations[2])]))).detach().numpy())
     activations.append(networks[3](torch.tensor(activations[2])).detach().numpy())
