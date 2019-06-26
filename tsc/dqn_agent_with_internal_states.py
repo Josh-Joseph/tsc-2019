@@ -21,28 +21,66 @@ UPDATE_EVERY = 4        # how often to update the network
 device = torch.device("cpu")
 
 
+# TODO combine brain_state_to_internal_state and map_observation_to_recurrent_state functions into a single function
+
+def brain_state_to_internal_state(brain_state):
+    def i_am_high_above_the_ground(observation):
+        return observation[1] > 0.5  # observation[1] accesses y position
+
+    def i_am_low_to_the_ground(observation):
+        return observation[1] <= 0.5  # observation[1] accesses y position
+
+    def i_am_to_the_right_of_the_center(observation):
+        return observation[0] > 0.  # observation[0] accesses x position
+
+    def i_am_to_the_left_of_the_center(observation):
+        return observation[0] <= 0.  # observation[0] accesses x position
+
+    def i_am_falling_too_fast(observation):
+        return observation[3] < -0.2  # observation[0] accesses y velocity
+
+    regions = [
+        i_am_high_above_the_ground,
+        i_am_low_to_the_ground,
+        i_am_to_the_right_of_the_center,
+        i_am_to_the_left_of_the_center,
+        i_am_falling_too_fast
+    ]
+
+    internal_state = set()
+
+    recurrent_activations = brain_state['activations'][3]
+
+    for activation, region in zip(recurrent_activations, regions):
+
+        if activation > 0.5:
+            internal_state.add(region.__name__)
+
+    return internal_state
+
+
 def map_observation_to_recurrent_state(observation):
-    def I_am_high_above_the_ground(observation):
+    def i_am_high_above_the_ground(observation):
         return observation[:, 1] > 0.5
 
-    def I_am_low_to_the_ground(observation):
+    def i_am_low_to_the_ground(observation):
         return observation[:, 1] <= 0.5
 
-    def I_am_to_the_right_of_the_center(observation):
+    def i_am_to_the_right_of_the_center(observation):
         return observation[:, 0] > 0.
 
-    def I_am_to_the_left_of_the_center(observation):
+    def i_am_to_the_left_of_the_center(observation):
         return observation[:, 0] <= 0.
 
-    def I_am_falling_too_fast(observation):
+    def i_am_falling_too_fast(observation):
         return observation[:, 3] < -0.2
 
     regions = [
-        I_am_high_above_the_ground(observation),
-        I_am_low_to_the_ground(observation),
-        I_am_to_the_right_of_the_center(observation),
-        I_am_to_the_left_of_the_center(observation),
-        I_am_falling_too_fast(observation)
+        i_am_high_above_the_ground(observation),
+        i_am_low_to_the_ground(observation),
+        i_am_to_the_right_of_the_center(observation),
+        i_am_to_the_left_of_the_center(observation),
+        i_am_falling_too_fast(observation)
     ]
 
     target_recurrents = torch.stack(regions, dim=1).float()
