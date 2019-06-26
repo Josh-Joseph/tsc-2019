@@ -28,10 +28,10 @@ def map_observation_to_recurrent_state(observation):
     def I_am_low_to_the_ground(observation):
         return observation[:, 1] <= 0.5
 
-    def I_am_to_the_left_of_the_center(observation):
+    def I_am_to_the_right_of_the_center(observation):
         return observation[:, 0] > 0.
 
-    def I_am_to_the_right_of_the_center(observation):
+    def I_am_to_the_left_of_the_center(observation):
         return observation[:, 0] <= 0.
 
     def I_am_falling_too_fast(observation):
@@ -40,8 +40,8 @@ def map_observation_to_recurrent_state(observation):
     regions = [
         I_am_high_above_the_ground(observation),
         I_am_low_to_the_ground(observation),
-        I_am_to_the_left_of_the_center(observation),
         I_am_to_the_right_of_the_center(observation),
+        I_am_to_the_left_of_the_center(observation),
         I_am_falling_too_fast(observation)
     ]
 
