@@ -10,7 +10,7 @@ def visualize_weights(brain_state, figsize=DEFAULT_FIG_SIZE):
 
     f, axs = plt.subplots(1, len(brain_state['layer_weights']), figsize=figsize, constrained_layout=True)
 
-    f.suptitle("network layer weights", weight='bold', size=16)
+    f.suptitle("Part of the brain state: layer weights", weight='bold', size=16)
 
     for i, layer_weights in enumerate(brain_state['layer_weights']):
         sns.heatmap(layer_weights, cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
@@ -26,4 +26,4 @@ def visualize_activations(brain_state, figsize=DEFAULT_FIG_SIZE):
         sns.heatmap(np.array([activations]).T, cbar=False, xticklabels=False, yticklabels=False, ax=axs[i])
         axs[i].set_title('Activations {}'.format(i))
 
-    f.suptitle("network activations at time t", weight='bold', size=16)
+    f.suptitle("Part of the brain state: activations at time t", weight='bold', size=16)
